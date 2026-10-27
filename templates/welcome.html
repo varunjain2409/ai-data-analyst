@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Data Analyst - Welcome</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .welcome-box {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 24px;
+            padding: 48px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+        .welcome-box h1 {
+            font-size: 2.2rem;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+        .welcome-box .tagline {
+            color: #94a3b8;
+            font-size: 1rem;
+            margin-bottom: 32px;
+        }
+        .steps {
+            text-align: left;
+            margin-bottom: 32px;
+        }
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 18px;
+            padding: 14px;
+            background: #0f172a;
+            border-radius: 12px;
+            border: 1px solid #334155;
+        }
+        .step-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            color: #0f172a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .step-text {
+            flex: 1;
+        }
+        .step-text .title {
+            color: #e2e8f0;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+        .step-text .desc {
+            color: #94a3b8;
+            font-size: 0.82rem;
+        }
+        .pin-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #334155;
+            border-radius: 14px;
+            background: #0f172a;
+            color: #e2e8f0;
+            font-size: 1.3rem;
+            text-align: center;
+            letter-spacing: 10px;
+            outline: none;
+            margin-bottom: 16px;
+            transition: border-color 0.3s;
+        }
+        .pin-input:focus { border-color: #38bdf8; }
+        .pin-input::placeholder { color: #475569; letter-spacing: 2px; font-size: 1rem; }
+        .unlock-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            color: #0f172a;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .unlock-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(56,189,248,0.4); }
+        .pin-error {
+            color: #fca5a5;
+            font-size: 0.9rem;
+            margin-top: 12px;
+        }
+        .hint {
+            color: #64748b;
+            font-size: 0.8rem;
+            margin-top: 16px;
+        }
+        .lang-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .lang-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        .lang-btn:hover { border-color: #38bdf8; color: #38bdf8; }
+    </style>
+</head>
+<body>
+    <div class="lang-toggle">
+        <button class="lang-btn" onclick="toggleLang()" id="langBtn">English</button>
+    </div>
+
+    <div class="welcome-box">
+        <h1 id="title">AI Data Analyst</h1>
+        <p class="tagline" id="tagline">अपने डेटा से सवाल पूछो, SQL + चार्ट पाओ</p>
+
+        <div class="steps" id="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-text">
+                    <div class="title" data-hi="PIN दालो" data-en="Enter PIN">PIN दालो</div>
+                    <div class="desc" data-hi="सुरक्षा के लिए 4 अंकों का PIN दालो" data-en="Enter 4-digit PIN for security">सुरक्षा के लिए 4 अंकों का PIN दालो</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-text">
+                    <div class="title" data-hi="सवाल पूछो" data-en="Ask Question">सवाल पूछो</div>
+                    <div class="desc" data-hi="हिंदी या English में अपना सवाल लिखो" data-en="Write your question in Hindi or English">हिंदी या English में अपना सवाल लिखो</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-text">
+                    <div class="title" data-hi="चार्ट देखो" data-en="See Charts">चार्ट देखो</div>
+                    <div class="desc" data-hi="अपने डेटा का चार्ट और टेबल पाओ" data-en="Get charts and tables for your data">अपने डेटा का चार्ट और टेबल पाओ</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">4</div>
+                <div class="step-text">
+                    <div class="title" data-hi="दुकान मैनेज करो" data-en="Manage Shop">दुकान मैनेज करो</div>
+                    <div class="desc" data-hi="अपनी दुकान के products, customers, orders जोड़ो" data-en="Add your shop's products, customers, orders">अपनी दुकान के products, customers, orders जोड़ो</div>
+                </div>
+            </div>
+        </div>
+
+        <input type="password" class="pin-input" id="pinInput" placeholder="••••" maxlength="4" autofocus>
+        <button class="unlock-btn" onclick="unlock()" id="unlockBtn">खोलें / Unlock</button>
+        <p class="pin-error hidden" id="pinError">गलत PIN! दोबारा कोशिश करें</p>
+        <p class="hint" id="hint">Default PIN: <strong>1234</strong> (app.py में बदल सकते हो)</p>
+    </div>
+
+    <script>
+        let lang = 'hi';
+
+        function toggleLang() {
+            lang = lang === 'hi' ? 'en' : 'hi';
+            document.getElementById('langBtn').textContent = lang === 'hi' ? 'English' : 'हिंदी';
+            document.querySelectorAll('[data-hi]').forEach(el => {
+                el.textContent = el.getAttribute('data-' + lang);
+            });
+        }
+
+        async function unlock() {
+            const pin = document.getElementById('pinInput').value;
+            if (pin.length !== 4) {
+                document.getElementById('pinError').textContent = 'PIN 4 अंकों का होना चाहिए';
+                document.getElementById('pinError').classList.remove('hidden');
+                return;
+            }
+            const res = await fetch('/api/unlock', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pin })
+            });
+            const data = await res.json();
+            if (data.success) {
+                window.location.href = '/';
+            } else {
+                document.getElementById('pinError').textContent = 'गलत PIN! दोबारा कोशिश करें';
+                document.getElementById('pinError').classList.remove('hidden');
+            }
+        }
+
+        document.getElementById('pinInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') unlock();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Data Analyst - Lock</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .pin-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .pin-box {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 360px;
+            width: 100%;
+        }
+        .pin-box h2 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .pin-box p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+        .pin-input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            background: #0f172a;
+            color: #e2e8f0;
+            font-size: 1.2rem;
+            text-align: center;
+            letter-spacing: 8px;
+            outline: none;
+            margin-bottom: 16px;
+        }
+        .pin-input:focus { border-color: #38bdf8; }
+        .pin-error {
+            color: #fca5a5;
+            font-size: 0.85rem;
+            margin-top: 12px;
+        }
+        .pin-hint {
+            color: #64748b;
+            font-size: 0.75rem;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="pin-container">
+        <div class="pin-box">
+            <h2>AI Data Analyst</h2>
+            <p>Apne data ko safe rakhein — PIN daalo</p>
+            <input type="password" class="pin-input" id="pinInput" placeholder="••••" maxlength="4" autofocus>
+            <button onclick="unlock()" style="width:100%">Unlock</button>
+            <p class="pin-error hidden" id="pinError">Galat PIN. Dobara try karo.</p>
+            <p class="pin-hint">Default PIN: 1234</p>
+        </div>
+    </div>
+    <script>
+        async function unlock() {
+            const pin = document.getElementById('pinInput').value;
+            const res = await fetch('/api/unlock', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pin })
+            });
+            const data = await res.json();
+            if (data.success) {
+                window.location.href = '/';
+            } else {
+                document.getElementById('pinError').classList.remove('hidden');
+            }
+        }
+        document.getElementById('pinInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') unlock();
+        });
+    </script>
+</body>
+</html>

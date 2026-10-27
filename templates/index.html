@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Data Analyst</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Data Analyst</h1>
+            <p class="subtitle" data-i18n="subtitle">अपने डेटा से सवाल पूछो, SQL + चार्ट पाओ</p>
+        </header>
+
+        <div class="toolbar">
+            <button class="tool-btn" onclick="window.location.href='/shop'" data-i18n="shop">दुकान</button>
+            <button class="tool-btn" onclick="toggleHistory()" data-i18n="history">इतिहास</button>
+            <button class="tool-btn" onclick="document.getElementById('fileInput').click()" data-i18n="upload">CSV Upload</button>
+            <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" style="display:none" onchange="uploadFile(this)">
+            <button class="tool-btn" onclick="toggleVoice()" id="voiceBtn" data-i18n="voice">बोलो</button>
+            <button class="tool-btn" onclick="clearHistory()" data-i18n="clear">साफ करें</button>
+            <select class="tool-btn lang-select" id="langSelect" onchange="setLanguage(this.value)">
+                <option value="hi">हिंदी</option>
+                <option value="en">English</option>
+            </select>
+        </div>
+
+        <div class="input-section">
+            <textarea id="question" placeholder="अपना सवाल यहाँ लिखो... जैसे: Top 5 products by sales" rows="2" data-i18n-ph="placeholder"></textarea>
+            <button id="askBtn" onclick="askQuestion()" data-i18n="analyze">विश्लेषण</button>
+        </div>
+
+        <div class="samples">
+            <p data-i18n="samples">नमूना सवाल:</p>
+            <div class="sample-chips">
+                {% for q in sample_questions %}
+                <button class="chip" onclick="setQuestion('{{ q }}')">{{ q }}</button>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <p>विश्लेषण हो रहा है...</p>
+        </div>
+
+        <div id="result" class="result hidden">
+            <div class="result-header">
+                <h3>परिणाम</h3>
+                <div>
+                    <span id="methodBadge" class="method-badge"></span>
+                    <span id="rowCount" class="badge"></span>
+                    <button class="tool-btn" onclick="exportCSV()">CSV Export</button>
+                </div>
+            </div>
+
+            <div id="insightsSection" class="insights-section">
+                <h4 data-i18n="insights">जानकारी</h4>
+                <p id="insightsText"></p>
+            </div>
+
+            <div id="sqlSection" class="sql-section">
+                <h4 data-i18n="sql">SQL क्वेरी</h4>
+                <pre id="sqlCode"></pre>
+            </div>
+
+            <div id="chartSection" class="chart-section hidden">
+                <h4 data-i18n="chart">चार्ट</h4>
+                <img id="chartImg" src="" alt="Chart">
+            </div>
+
+            <div id="tableSection" class="table-section">
+                <h4 data-i18n="data">डेटा</h4>
+                <div class="table-wrapper">
+                    <table id="resultTable">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="error" class="error hidden"></div>
+
+        <div id="historyPanel" class="history-panel hidden">
+            <div class="history-header">
+                <h3 data-i18n="historyTitle">सवालों का इतिहास</h3>
+                <button class="tool-btn" onclick="toggleHistory()" data-i18n="close">बंद करें</button>
+            </div>
+            <div id="historyList"></div>
+        </div>
+
+        <div id="uploadStatus" class="upload-status hidden"></div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

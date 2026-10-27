@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Data Analyst - Login</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0f172a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Animated background */
+        .bg-animation {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .bg-animation span {
+            position: absolute;
+            display: block;
+            width: 20px; height: 20px;
+            background: rgba(56, 189, 248, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite;
+        }
+        .bg-animation span:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .bg-animation span:nth-child(2) { left: 30%; animation-delay: 2s; }
+        .bg-animation span:nth-child(3) { left: 50%; animation-delay: 4s; }
+        .bg-animation span:nth-child(4) { left: 70%; animation-delay: 6s; }
+        .bg-animation span:nth-child(5) { left: 90%; animation-delay: 8s; }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Login card */
+        .login-card {
+            position: relative;
+            z-index: 1;
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 24px;
+            padding: 48px;
+            max-width: 420px;
+            width: 90%;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .login-card h1 {
+            font-size: 2rem;
+            text-align: center;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .login-card .tagline {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 32px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.8);
+            color: #e2e8f0;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            color: #0f172a;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 8px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
+        }
+
+        .login-btn:active { transform: translateY(0); }
+
+        .error-msg {
+            color: #fca5a5;
+            font-size: 0.85rem;
+            text-align: center;
+            margin-top: 12px;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .hint {
+            color: #64748b;
+            font-size: 0.75rem;
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .lang-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 2;
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid #334155;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .lang-btn:hover { border-color: #38bdf8; color: #38bdf8; }
+    </style>
+</head>
+<body>
+    <div class="bg-animation">
+        <span></span><span></span><span></span><span></span><span></span>
+    </div>
+
+    <div class="lang-toggle">
+        <button class="lang-btn" onclick="toggleLang()" id="langBtn">English</button>
+    </div>
+
+    <div class="login-card">
+        <h1 id="title">AI Data Analyst</h1>
+        <p class="tagline" id="tagline">अपने डेटा से सवाल पूछो, SQL + चार्ट पाओ</p>
+
+        <div class="input-group">
+            <label id="pinLabel">PIN</label>
+            <input type="password" id="pinInput" placeholder="••••" maxlength="4" autofocus>
+        </div>
+
+        <button class="login-btn" onclick="unlock()" id="loginBtn">खोलें / Unlock</button>
+        <p class="error-msg hidden" id="errorMsg">गलत PIN! दोबारा कोशिश करें</p>
+        <p class="hint" id="hint">Default PIN: <strong>1234</strong></p>
+    </div>
+
+    <script>
+        let lang = localStorage.getItem('lang') || 'hi';
+
+        function toggleLang() {
+            lang = lang === 'hi' ? 'en' : 'hi';
+            localStorage.setItem('lang', lang);
+            updateText();
+        }
+
+        function updateText() {
+            document.getElementById('langBtn').textContent = lang === 'hi' ? 'English' : 'हिंदी';
+            if (lang === 'en') {
+                document.getElementById('tagline').textContent = 'Ask questions in natural language, get SQL + charts';
+                document.getElementById('loginBtn').textContent = 'Unlock';
+                document.getElementById('errorMsg').textContent = 'Wrong PIN! Try again.';
+                document.getElementById('hint').innerHTML = 'Default PIN: <strong>1234</strong>';
+            } else {
+                document.getElementById('tagline').textContent = 'अपने डेटा से सवाल पूछो, SQL + चार्ट पाओ';
+                document.getElementById('loginBtn').textContent = 'खोलें / Unlock';
+                document.getElementById('errorMsg').textContent = 'गलत PIN! दोबारा कोशिश करें';
+                document.getElementById('hint').innerHTML = 'Default PIN: <strong>1234</strong>';
+            }
+        }
+
+        async function unlock() {
+            const pin = document.getElementById('pinInput').value;
+            if (pin.length !== 4) {
+                document.getElementById('errorMsg').textContent = lang === 'hi' ? 'PIN 4 अंकों का होना चाहिए' : 'PIN must be 4 digits';
+                document.getElementById('errorMsg').classList.remove('hidden');
+                return;
+            }
+            const res = await fetch('/api/unlock', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pin })
+            });
+            const data = await res.json();
+            if (data.success) {
+                window.location.href = '/';
+            } else {
+                document.getElementById('errorMsg').classList.remove('hidden');
+            }
+        }
+
+        document.getElementById('pinInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') unlock();
+        });
+
+        updateText();
+    </script>
+</body>
+</html>

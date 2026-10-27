@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Secrets
+.env
+*.key
+*.pem
+
+# User data / uploads
+data/uploads/
+data/history.db
+
+# Personal notes (not part of the app)
+capgemini-prep.html
+resume-*.html
+
+# OS junk
+Thumbs.db
+Desktop.ini

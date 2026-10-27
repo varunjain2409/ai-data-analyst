@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Dashboard - AI Data Analyst</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-card .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #38bdf8;
+        }
+        .stat-card .label {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+        .shop-section {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .shop-section h3 {
+            color: #38bdf8;
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+        }
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .form-row input, .form-row select {
+            padding: 10px 14px;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            background: #1e293b;
+            color: #e2e8f0;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .form-row input:focus { border-color: #38bdf8; }
+        .form-row input { flex: 1; min-width: 120px; }
+        .shop-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .shop-tab {
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .shop-tab.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
+        .shop-tab:hover { border-color: #38bdf8; }
+        .hidden { display: none; }
+        .success-msg { color: #34d399; font-size: 0.85rem; margin-top: 8px; }
+        .back-btn { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Shop Dashboard</h1>
+            <p class="subtitle">Apna shop data manage karo</p>
+        </header>
+
+        <button class="tool-btn back-btn" onclick="window.location.href='/'">Back to Analyzer</button>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="value" id="statProducts">-</div>
+                <div class="label">Products</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="statCustomers">-</div>
+                <div class="label">Customers</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="statOrders">-</div>
+                <div class="label">Orders</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="statRevenue">-</div>
+                <div class="label">Revenue</div>
+            </div>
+        </div>
+
+        <div class="shop-tabs">
+            <button class="shop-tab active" onclick="showTab('products')">Products</button>
+            <button class="shop-tab" onclick="showTab('customers')">Customers</button>
+            <button class="shop-tab" onclick="showTab('orders')">Orders</button>
+        </div>
+
+        <div id="productsTab" class="shop-section">
+            <h3>Add Product</h3>
+            <div class="form-row">
+                <input type="text" id="prodName" placeholder="Product name">
+                <input type="text" id="prodCategory" placeholder="Category">
+                <input type="number" id="prodPrice" placeholder="Price">
+                <input type="number" id="prodStock" placeholder="Stock">
+                <button onclick="addProduct()">Add</button>
+            </div>
+            <p class="success-msg hidden" id="prodMsg">Product added!</p>
+        </div>
+
+        <div id="customersTab" class="shop-section hidden">
+            <h3>Add Customer</h3>
+            <div class="form-row">
+                <input type="text" id="custName" placeholder="Customer name">
+                <input type="email" id="custEmail" placeholder="Email">
+                <input type="text" id="custCity" placeholder="City">
+                <button onclick="addCustomer()">Add</button>
+            </div>
+            <p class="success-msg hidden" id="custMsg">Customer added!</p>
+        </div>
+
+        <div id="ordersTab" class="shop-section hidden">
+            <h3>Add Order</h3>
+            <div class="form-row">
+                <input type="number" id="orderCustId" placeholder="Customer ID">
+                <input type="number" id="orderProdId" placeholder="Product ID">
+                <input type="number" id="orderQty" placeholder="Quantity" value="1">
+                <button onclick="addOrder()">Add</button>
+            </div>
+            <p class="success-msg hidden" id="orderMsg">Order added!</p>
+        </div>
+    </div>
+
+    <script>
+        async function loadStats() {
+            try {
+                const res = await fetch('/api/shop/data');
+                const data = await res.json();
+                document.getElementById('statProducts').textContent = data.products || 0;
+                document.getElementById('statCustomers').textContent = data.customers || 0;
+                document.getElementById('statOrders').textContent = data.orders || 0;
+                document.getElementById('statRevenue').textContent = '₹' + (data.revenue || 0).toLocaleString();
+            } catch (err) {
+                console.error('Stats load failed:', err);
+            }
+        }
+
+        function showTab(tab) {
+            document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.shop-section').forEach(s => s.classList.add('hidden'));
+            event.target.classList.add('active');
+            document.getElementById(tab + 'Tab').classList.remove('hidden');
+        }
+
+        async function addProduct() {
+            const name = document.getElementById('prodName').value;
+            const category = document.getElementById('prodCategory').value;
+            const price = document.getElementById('prodPrice').value;
+            const stock = document.getElementById('prodStock').value;
+            if (!name || !category || !price) return alert('Saare fields bharein');
+
+            const res = await fetch('/api/shop/add_product', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, category, price, stock })
+            });
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('prodMsg').classList.remove('hidden');
+                document.getElementById('prodName').value = '';
+                document.getElementById('prodCategory').value = '';
+                document.getElementById('prodPrice').value = '';
+                document.getElementById('prodStock').value = '';
+                loadStats();
+                setTimeout(() => document.getElementById('prodMsg').classList.add('hidden'), 2000);
+            }
+        }
+
+        async function addCustomer() {
+            const name = document.getElementById('custName').value;
+            const email = document.getElementById('custEmail').value;
+            const city = document.getElementById('custCity').value;
+            if (!name || !email) return alert('Name aur email daalo');
+
+            const res = await fetch('/api/shop/add_customer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, city })
+            });
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('custMsg').classList.remove('hidden');
+                document.getElementById('custName').value = '';
+                document.getElementById('custEmail').value = '';
+                document.getElementById('custCity').value = '';
+                loadStats();
+                setTimeout(() => document.getElementById('custMsg').classList.add('hidden'), 2000);
+            }
+        }
+
+        async function addOrder() {
+            const customer_id = document.getElementById('orderCustId').value;
+            const product_id = document.getElementById('orderProdId').value;
+            const quantity = document.getElementById('orderQty').value;
+            if (!customer_id || !product_id) return alert('Customer aur product daalo');
+
+            const res = await fetch('/api/shop/add_order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ customer_id, product_id, quantity })
+            });
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('orderMsg').classList.remove('hidden');
+                document.getElementById('orderCustId').value = '';
+                document.getElementById('orderProdId').value = '';
+                document.getElementById('orderQty').value = '1';
+                loadStats();
+                setTimeout(() => document.getElementById('orderMsg').classList.add('hidden'), 2000);
+            }
+        }
+
+        loadStats();
+    </script>
+</body>
+</html>
